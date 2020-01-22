@@ -1,0 +1,33 @@
+.sidebar {
+  width: 100%;
+  height: calc(100vh - 3.5rem);
+  display: block;
+}
+a {
+  color: white;
+}
+a:hover {
+  color: burlywood !important;
+  cursor: pointer;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+:host {
+  height: 100%;
+}
+.card {
+  width: 25rem;
+  margin: 10% auto;
+}
+.role {
+  padding-bottom: 10%;
+}
+.photo {
+  height: 50%;
+  width: 50%;
+  margin: auto;
+  margin-top: 3%;
+  border-radius: 50%;
+}

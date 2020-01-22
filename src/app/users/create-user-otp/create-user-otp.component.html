@@ -1,0 +1,203 @@
+<div class="row no-gutters">
+  <div class="col-2">
+    <div class="navbar navbar-dark flex-column bg-dark sidebar">
+      <span class="nav-item">
+        <a class="nav-link active disabled">Sign Out</a>
+      </span>
+    </div>
+  </div>
+  <div class="col-9">
+    <div class="card">
+      <div class="container">
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm" ngNativeValidate>
+          <div class="form-group">
+            <h1 class="text-center">User Registration</h1>
+          </div>
+          <div class="card-block text-center">
+            <img
+              class="card-img-top img-responsive photo"
+              src="../../../../assets/user.png"
+            />
+          </div>
+          <div class="form-group" [class.has-error]="firstName.invalid">
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              placeholder="First Name"
+              ngModel
+              #firstName="ngModel"
+              required
+            />
+            <span
+              class="has-error"
+              *ngIf="firstName.errors?.required && firstName.touched"
+            >
+              First name is Required
+            </span>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              id="middleName"
+              name="middleName"
+              placeholder="Middle Name"
+              #middleName="ngModel"
+              ngModel
+            />
+          </div>
+
+          <div class="form-group" [class.has-error]="lastName.invalid">
+            <input
+              type="text"
+              class="form-control"
+              ngModel
+              id="lastName"
+              name="lastName"
+              placeholder="Last Name"
+              #lastName="ngModel"
+              ngModel
+              required
+            />
+            <span
+              class="has-error"
+              *ngIf="lastName.errors?.required && lastName.touched"
+            >
+              Last name is Required
+            </span>
+          </div>
+
+          <div class="row">
+            <div class="col-6 form-group">
+              <select class="form-control" name="role" #role="ngModel" ngModel>
+                <option
+                  *ngFor="let authority of authorities"
+                  value="{{ authority.name }}"
+                >
+                  {{ authority.descr }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-6 form-group" [class.has-error]="email.invalid">
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Email"
+                [readonly]="userEmail"
+                #email="ngModel"
+                [(ngModel)]="userEmail"
+                required
+                email
+              />
+              <span
+                class="has-error"
+                *ngIf="email.errors?.required && email.touched"
+              >
+                Email is Required
+              </span>
+              <span class="has-error" *ngIf="email.errors?.email">
+                You entered invaid Email..!
+              </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 form-group" [class.has-error]="password.invalid">
+              <input
+                type="password"
+                class="form-control"
+                ngModel
+                #password="ngModel"
+                id="password"
+                name="password"
+                placeholder="Password"
+                required
+                ngModel
+              />
+              <span
+                class="has-error"
+                *ngIf="password.errors?.required && password.touched"
+              >
+                Password is Required
+              </span>
+            </div>
+
+            <div
+              class="col-6 form-group"
+              [class.has-error]="confirmPassword.invalid"
+            >
+              <input
+                type="password"
+                class="form-control"
+                ngModel
+                #confirmPassword="ngModel"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                ngModel
+                required
+              />
+              <span
+                class="has-error"
+                *ngIf="
+                  confirmPassword.errors?.required && confirmPassword.touched
+                "
+              >
+                Confirm Password is Required
+              </span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-6 form-group">
+              <select
+                class="form-control"
+                id="countryCodeId"
+                [disabled]="userCountryCode || !countryCodeDisable"
+                name="countryCodeId"
+                #countryCodeId="ngModel"
+                [(ngModel)]="userCountryCode"
+              >
+                <option
+                  *ngFor="let countryCode of countryCodes"
+                  [value]="countryCode.id"
+                  >{{ countryCode.code }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              class="col-6 form-group"
+              [class.has-error]="mobileNumber.invalid"
+            >
+              <input
+                type="text"
+                class="form-control"
+                #mobileNumber="ngModel"
+                id="mobileNumber"
+                name="mobileNumber"
+                [disabled]="countryCodeDisable && userMobile"
+                placeholder="Mobile Number"
+                [(ngModel)]="userMobile"
+                pattern="^[0-9]{10}$"
+                (blur)="isDisabled()"
+              />
+              <span class="has-error" *ngIf="mobileNumber.errors?.pattern">
+                You entered invaid Mobilenumber..!
+              </span>
+            </div>
+          </div>
+          <div class="card-block text-center">
+            <button class="btn btn-primary buttn-size" [disabled]="f.invalid">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

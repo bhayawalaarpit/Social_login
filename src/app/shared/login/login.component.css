@@ -1,0 +1,28 @@
+form {
+  margin-top: 10%;
+}
+
+button {
+  width: 85%;
+}
+
+.space {
+  padding: 20px;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+:host {
+  height: 100%;
+}
+
+.photo {
+  object-fit: contain;
+}
+
+.card {
+  width: 20rem;
+  margin-top: 10%;
+}

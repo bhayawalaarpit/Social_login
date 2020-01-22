@@ -1,0 +1,29 @@
+<div class="container">
+  <div *ngIf="userData" class="card text-center">
+    <div class="card-block  ">
+      <img class="card-img-top img-responsive photo" src="../../../../assets/user.png" *ngIf="!userData.imageUrl" />
+      <img class="card-img-top img-responsive photo" src="{{ userData.imageUrl }}" *ngIf="userData.imageUrl" />
+    </div>
+    <div class="card-block">
+      <h4 class="card-title">
+        {{ userData.firstName }} {{ userData.lastName }}
+      </h4>
+
+      <p class="card-text" *ngIf="role"><b>Role:</b> {{ role }}</p>
+      <p class="card-text" *ngIf="userData.provider">
+        <b>Provider:</b> {{ userData.provider }}
+      </p>
+      <p class="card-text" *ngIf="userData.email">
+        <b>Email :</b> {{ userData.email }}
+      </p>
+      <p class="card-text" *ngIf="userData.mobileNumber">
+        <b>Mobile:</b> {{ userData.mobileNumber }}
+      </p>
+    </div>
+    <div class="card-block">
+      <button class="btn btn-info buttn-size" (click)="location.back()">
+        Back
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="row">
+    <div class="col-4" *ngFor="let user of userList">
+      <div *ngIf="user" class="card text-center">
+        <div class="card-block photo">
+          <img class="card-img-top img-responsive photo" src="../../../../assets/user.png" *ngIf="!user.imageUrl" />
+          <img class="card-img-top img-responsive photo" src="{{ user.imageUrl }}" *ngIf="user.imageUrl" />
+        </div>
+        <div class="card-block">
+          <h4 class="card-title" *ngIf="user.firstName">
+            {{ user.firstName }} {{ user.lastName }}
+          </h4>
+          <p class="card-text" *ngIf="user.email">{{ user.email }}</p>
+          <p class="card-text" *ngIf="user.authorities">
+            {{
+                user.authorities.length === 2
+                  ? 'User/Admin'
+                  : user.authorities[0].name === 'ROLE_USER'
+                  ? 'User'
+                  : 'Admin'
+              }}
+          </p>
+        </div>
+        <div class="card-block">
+          <button class="btn btn-success buttn-size" routerLink="edit/{{ user.id }}">
+            Edit
+          </button>
+          <button class="btn btn-danger" (click)="deleteUser(user.id)">
+            Delete
+          </button>
+          <button class="btn btn-info buttn-size" routerLink="view/{{ user.id }}">
+            Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.bg-transparent {
+  background-color: transparent;
+}
+
+:host {
+  height: 100%;
+}
+
+.photo {
+  border-radius: 50%;
+  height: 30%;
+  width: 30%;
+  margin: auto;
+}
+
+.card {
+  width: 50rem;
+  margin: 1% auto;
+}
+
+.buttn-size {
+  margin-bottom: 3%;
+  width: 40%;
+}

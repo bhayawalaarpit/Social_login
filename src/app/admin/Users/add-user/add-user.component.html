@@ -1,0 +1,215 @@
+<div class="container">
+  <div class="card ">
+    <div class="container">
+      <form (ngSubmit)="onSubmit(f)" #f="ngForm" ngNativeValidate>
+        <div class="form-group">
+          <h1 class="text-center" *ngIf="userData['provider'] == 'local'">
+            User
+          </h1>
+          <h1 class="text-center" *ngIf="userData['provider'] != 'local'">
+            Social User
+          </h1>
+        </div>
+        <div class="card-block text-center">
+          <img
+            class="card-img-top img-responsive photo"
+            src="../../../../assets/user.png"
+          />
+        </div>
+        <div class="form-group" [class.has-error]="fname.invalid">
+          <input
+            type="text"
+            class="form-control"
+            id="fname"
+            name="fname"
+            placeholder="First Name"
+            #fname="ngModel"
+            [(ngModel)]="userData['firstName']"
+            required
+          />
+          <span
+            class="has-error"
+            *ngIf="fname.errors?.required && fname.touched"
+          >
+            First name is Required
+          </span>
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            id="mname"
+            name="mname"
+            placeholder="Middle Name"
+            #mname="ngModel"
+            [(ngModel)]="userData['middleName']"
+          />
+        </div>
+
+        <div class="form-group" [class.has-error]="lname.invalid">
+          <input
+            type="text"
+            class="form-control"
+            ngModel
+            id="lname"
+            name="lname"
+            placeholder="Last Name"
+            #lname="ngModel"
+            [(ngModel)]="userData['lastName']"
+            required
+          />
+          <span
+            class="has-error"
+            *ngIf="lname.errors?.required && lname.touched"
+          >
+            Last name is Required
+          </span>
+        </div>
+
+        <div class="row">
+          <div class="col-6 form-group">
+            <select
+              class="form-control"
+              id="role"
+              name="role"
+              #role="ngModel"
+              [(ngModel)]="userData['authorityName']"
+              required
+            >
+              <option
+                *ngFor="let authority of authorities"
+                value="{{ authority.name }}"
+              >
+                {{ authority.descr }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-6 form-group" [class.has-error]="email.invalid">
+            <input
+              type="email"
+              class="form-control"
+              ngModel
+              id="email"
+              name="email"
+              placeholder="Email"
+              #email="ngModel"
+              [(ngModel)]="userData['email']"
+              required
+              email
+            />
+            <span
+              class="has-error"
+              *ngIf="email.errors?.required && email.touched"
+            >
+              Email is Required
+            </span>
+            <span class="has-error" *ngIf="email.errors?.email">
+              You entered invaid Email..!
+            </span>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!id">
+          <div class="col-6 form-group" [class.has-error]="password.invalid">
+            <input
+              type="password"
+              class="form-control"
+              ngModel
+              #password="ngModel"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+              [(ngModel)]="userData['password']"
+            />
+            <span
+              class="has-error"
+              *ngIf="password.errors?.required && password.touched"
+            >
+              Password is Required
+            </span>
+          </div>
+
+          <div
+            class="col-6 form-group"
+            [class.has-error]="confirmPassword.invalid"
+          >
+            <input
+              type="password"
+              class="form-control"
+              ngModel
+              #confirmPassword="ngModel"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              [(ngModel)]="userData['confirmPassword']"
+              required
+            />
+            <span
+              class="has-error"
+              *ngIf="
+                confirmPassword.errors?.required && confirmPassword.touched
+              "
+            >
+              Confirm Password is Required
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div
+            class=" col-6 form-group"
+            [class.has-error]="countryCode.invalid"
+          >
+            <select
+              class="form-control"
+              id="countryCode"
+              name="countryCode"
+              [disabled]="!countryCodeDisable"
+              [required]="!mobileNumber.invalid"
+              #countryCode="ngModel"
+              [(ngModel)]="userData['countryCodeId']"
+            >
+              <option
+                *ngFor="let countryCode of countryCodes"
+                [value]="countryCode.id"
+                [selected]="userData['countryCodeId'] === countryCode.id"
+                >{{ countryCode.code }}
+              </option>
+            </select>
+            <span class="has-error" *ngIf="mobileNumber.errors?.pattern">
+              Please entered vaid Mobilenumber or CountryCode ..!
+            </span>
+          </div>
+
+          <div
+            class="col-6 form-group"
+            [class.has-error]="mobileNumber.invalid"
+          >
+            <input
+              type="text"
+              class="form-control"
+              #mobileNumber="ngModel"
+              id="mobileNumber"
+              name="mobileNumber"
+              placeholder="Mobile Number"
+              [(ngModel)]="userData['mobileNumber']"
+              pattern="^[0-9]{10}$"
+              (blur)="isDisabled()"
+            />
+            <span class="has-error" *ngIf="mobileNumber.errors?.patter">
+              You entered invaid Mobilenumber..!
+            </span>
+          </div>
+        </div>
+
+        <div class="card-block text-center">
+          <button class="btn btn-primary buttn-size" [disabled]="f.invalid">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

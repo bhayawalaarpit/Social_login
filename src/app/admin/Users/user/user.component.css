@@ -1,0 +1,14 @@
+.sidebar {
+  width: 100%;
+  height: 100vh;
+  display: block;
+}
+
+a {
+  color: white;
+}
+
+a:hover {
+  color: burlywood !important;
+  cursor: pointer;
+}

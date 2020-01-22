@@ -1,0 +1,131 @@
+<div class="container">
+  <form (ngSubmit)="onLogin(f)" #f="ngForm" ngNativeValidate>
+    <div class="row">
+      <div class="col-6 form-group">
+        <h1><label>Login</label></h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 form-group" [class.has-error]="email.invalid">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" ngModel #email="ngModel" id="email" name="email"
+          placeholder="Enter Email" required email />
+        <span class="has-error" *ngIf="email.errors?.required && email.touched">
+          Email is Required
+        </span>
+        <span class="has-error" *ngIf="email.errors?.email">
+          Opps Invaid Email..!
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6 form-group" [class.has-error]="password.invalid">
+        <label for="password">Password</label>
+        <input type="password" ngModel #password="ngModel" class="form-control" id="password" name="password"
+          placeholder="Password" required />
+        <span class="has-error" *ngIf="password.errors?.required && password.touched">
+          Password is Required
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-2 text-center">
+        <button type="submit" class="btn btn-primary" [disabled]="f.invalid">
+          Login
+        </button>
+      </div>
+      <div class="col-3 text-center">
+        <a href="#"> Forgot Password </a>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="!isAdmin">
+    <hr>
+    <h2>Social login</h2>
+
+    <div class="row">
+      <div class="col-2">
+        <button type="button" class="btn btn-primary float-right" (click)="signInWithGoogle()">
+          Google+
+        </button>
+      </div>
+      <div class="col-2">
+        <button type="button" class="btn btn-primary" (click)="signInWithFB()">
+          Facebook
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="!isAdmin">
+    <hr>
+    <h2>Login with OTP</h2>
+    <div class="row">
+
+      <div class="col-2">
+        <button type="button" class="btn btn-primary float-right" (click)="generateOTPwith = 'email'">
+          Via Email
+        </button>
+      </div>
+      <div class="col-2">
+        <button type="button" class="btn btn-primary" (click)="generateOTPwith = 'mobile'">
+          Via Mobile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <form #f="ngForm" (ngSubmit)="signInViaOTP(f)" ngNativeValidate
+      *ngIf="generateOTPwith === 'email' || generateOTPwith === 'mobile'">
+      <h2>Generate OTP via {{generateOTPwith === 'email' ? 'Email' : generateOTPwith === 'mobile' ? 'Mobile' : ''}}
+      </h2>
+
+      <div class="row" *ngIf="generateOTPwith === 'mobile'">
+        <div class=" col-6 form-group">
+          <select class="form-control" id="countryCode" name="countryCode" #countryCode="ngModel" ngModel
+            [required]="generateOTPwith === 'mobile'">
+            <option *ngFor="let countryCode of countryCodes" [value]="countryCode.id">
+              {{ countryCode.code }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 form-group" [class.has-error]="emailOrMobile.invalid">
+          <input type="text" class="form-control" ngModel id="emailOrMobile" name="emailOrMobile"
+            placeholder="Email or Mobile number" #emailOrMobile="ngModel" ngModel required
+            [email]="generateOTPwith === 'email'" [pattern]="generateOTPwith === 'mobile' ? '^[0-9]{10}$':''" />
+          <span class="has-error" *ngIf="emailOrMobile.errors?.required && emailOrMobile.touched">
+            This is a Required field
+          </span>
+          <span class="has-error" *ngIf="emailOrMobile.errors?.email">
+            You entered invaid Email..!
+          </span>
+
+          <span class="has-error" *ngIf="emailOrMobile.errors?.pattern">
+            You entered invaid Mobilenumber..!
+          </span>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-6 form-group" *ngIf="enterOTP">
+          <input type="text" class="form-control" id="otp" name="otp" placeholder="OTP" ngModel />
+        </div>
+      </div>
+
+      <div class="col-2 text-center" *ngIf="generateOTPwith === 'email' || generateOTPwith === 'mobile'">
+        <button class="btn btn-primary" type="submit" [disabled]="f.invalid">
+          {{enterOTP ? 'Submit' : 'Generate OTP'}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
