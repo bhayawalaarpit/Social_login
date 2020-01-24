@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { LoginService } from 'src/app/shared/services/login.services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NotificationService } from 'src/app/shared/services/notification.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-user',
@@ -12,7 +12,6 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 export class AddUserComponent implements OnInit {
   constructor(
     private loginService: LoginService,
-    private notification: NotificationService,
     private router: Router,
     private activateRoute: ActivatedRoute
   ) {}
@@ -22,6 +21,7 @@ export class AddUserComponent implements OnInit {
   authorities;
   countryCodes;
   countryCodeDisable = false;
+  matchPassword = false;
 
   ngOnInit() {
     this.id = this.activateRoute.snapshot.paramMap.get('id');
@@ -51,40 +51,97 @@ export class AddUserComponent implements OnInit {
     this.countryCodeDisable = true;
   }
 
+  checkPass(Password, confirmPassword) {
+    Password === confirmPassword
+      ? (this.matchPassword = true)
+      : (this.matchPassword = false);
+  }
+
   onSubmit(form: NgForm) {
+    // tost notification
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+
+    // assign value
     const reqData = Object.assign({}, this.userData);
     reqData[`roles`] = [
       this.authorities.find(
         authority => authority.name === this.userData[`authorityName`]
       )
     ];
+
     if (!reqData.hasOwnProperty('id')) {
+      // Save User
       reqData[`provider`] = 'local';
       this.loginService.saveUser(reqData).subscribe(
         res => {
-          this.notification.showNotification('success', 'User is registred');
-          this.router.navigate(['admin/users']);
-          form.reset();
+          if (res[`errorMessage`]) {
+            Toast.fire({
+              icon: 'error',
+              title: res[`errorMessage`]
+            });
+          } else {
+            Toast.fire({
+              icon: 'success',
+              title: 'Save User successfully'
+            });
+            this.router.navigate(['admin/users']);
+            form.reset();
+          }
         },
         err => {
-          this.notification.showNotification('error', err.error.error);
+          Toast.fire({
+            icon: 'error',
+            title: err.error.error
+          });
           console.log('err', err.error.error);
         }
       );
     } else {
-      this.loginService.updateUser(reqData).subscribe(
-        res => {
-          this.notification.showNotification(
-            'success',
-            'User is update successfully'
+      // Update User
+
+      Swal.fire({
+        width: '20rem',
+        heightAuto: false,
+        title: 'Are you sure?',
+        text: "You won't to Update User!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Update it!'
+      }).then(async result => {
+        if (result.value) {
+          this.loginService.updateUser(reqData).subscribe(
+            res => {
+              if (res[`errorMessage`]) {
+                Toast.fire({
+                  icon: 'error',
+                  title: res[`errorMessage`]
+                });
+              } else {
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Update User successfully'
+                });
+                this.router.navigate(['admin/users']);
+                form.reset();
+              }
+            },
+            err => {
+              Toast.fire({
+                icon: 'error',
+                title: err.error.error
+              });
+            }
           );
-          this.router.navigate(['admin/users']);
-          form.reset();
-        },
-        err => {
-          this.notification.showNotification('error', err.error.error);
         }
-      );
+      });
     }
   }
 }

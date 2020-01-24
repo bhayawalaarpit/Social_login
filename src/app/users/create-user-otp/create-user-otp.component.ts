@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService } from 'src/app/shared/services/login.services';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-create-user-otp',
@@ -16,6 +17,8 @@ export class CreateUserOtpComponent implements OnInit {
   userMobile;
   userCountryCode;
   countryCodeDisable = false;
+  matchPassword = false;
+
   constructor(private loginService: LoginService, private router: Router) {}
 
   ngOnInit() {
@@ -44,7 +47,22 @@ export class CreateUserOtpComponent implements OnInit {
       : (this.countryCodeDisable = false);
   }
 
+  checkPass(Password, confirmPassword) {
+    Password === confirmPassword
+      ? (this.matchPassword = true)
+      : (this.matchPassword = false);
+  }
+
   onSubmit(form: NgForm) {
+    // tost notification
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+
     this.userData = form.value;
     this.userData.role = [
       this.authorities.find(authority => authority.name === form.value.role)
@@ -53,9 +71,20 @@ export class CreateUserOtpComponent implements OnInit {
     this.loginService
       .registerUserViaOtp(this.userData)
       .subscribe(otpUserResponse => {
-        localStorage.setItem('Token', otpUserResponse[`token`]);
-        this.router.navigate(['dashboard']);
-        console.log('Login Successfully..!!', otpUserResponse);
+        if (otpUserResponse[`errorMessage`]) {
+          Toast.fire({
+            icon: 'error',
+            title: otpUserResponse[`errorMessage`]
+          });
+        } else {
+          localStorage.setItem('Token', otpUserResponse[`token`]);
+          Toast.fire({
+            icon: 'success',
+            title: 'Save User successfully'
+          });
+          this.router.navigate(['dashboard']);
+          form.reset();
+        }
       });
   }
 }

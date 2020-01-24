@@ -8,7 +8,7 @@ import {
 } from 'angularx-social-login';
 
 import { LoginService } from '../services/login.services';
-import { NotificationService } from '../services/notification.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -23,10 +23,16 @@ export class LoginComponent implements OnInit {
   enterOTP = false;
   countryCodes;
   requestCount = 0;
+  Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
 
   constructor(
     private loginService: LoginService,
-    private notification: NotificationService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -50,10 +56,17 @@ export class LoginComponent implements OnInit {
     this.loginService.simpleLogin(form.value).subscribe(
       res => {
         localStorage.setItem('Token', res[`token`]);
+        this.Toast.fire({
+          icon: 'success',
+          title: 'Login successfully'
+        });
         this.router.navigate([this.isAdmin ? 'admin/dashboard' : 'dashboard']);
       },
       err => {
-        console.warn('Error =>', err.error.error);
+        this.Toast.fire({
+          icon: 'error',
+          title: err.error.error
+        });
       }
     );
   }
@@ -73,10 +86,17 @@ export class LoginComponent implements OnInit {
         this.loginService.create_edit_SocialUser(userData).subscribe(
           response => {
             localStorage.setItem('Token', response[`token`]);
+            this.Toast.fire({
+              icon: 'success',
+              title: 'Login via Google successfully'
+            });
             this.router.navigate(['dashboard']);
           },
           error => {
-            console.warn('Error =>', error);
+            this.Toast.fire({
+              icon: 'error',
+              title: error.error.error
+            });
           }
         );
       })
@@ -98,11 +118,18 @@ export class LoginComponent implements OnInit {
           .create_edit_SocialUser(userData)
           .subscribe(response => {
             localStorage.setItem('Token', response[`token`]);
+            this.Toast.fire({
+              icon: 'success',
+              title: 'Login via Facebook successfully'
+            });
             this.router.navigate(['dashboard']);
           });
       },
       err => {
-        this.notification.showNotification('error', err);
+        this.Toast.fire({
+          icon: 'error',
+          title: err.error.error
+        });
       }
     );
   }
@@ -115,6 +142,10 @@ export class LoginComponent implements OnInit {
     };
     if (!this.enterOTP) {
       this.loginService.generateOtp(otpdata).subscribe(resOTP => {
+        this.Toast.fire({
+          icon: 'success',
+          title: resOTP[`message`]
+        });
         resOTP[`message`] === 'OTP Sent Successfully'
           ? (this.enterOTP = true)
           : (this.enterOTP = this.enterOTP);
@@ -124,16 +155,18 @@ export class LoginComponent implements OnInit {
       this.loginService.vreifyOtp(otpdata).subscribe(resVerifyOtp => {
         if (resVerifyOtp[`registered`] && resVerifyOtp[`verified`]) {
           localStorage.setItem('Token', resVerifyOtp[`token`]);
-          this.notification.showNotification(
-            'success',
-            resVerifyOtp[`message`]
-          );
+          this.Toast.fire({
+            icon: 'success',
+            title: resVerifyOtp[`message`]
+          });
+
           this.router.navigate(['dashboard']);
         } else if (!resVerifyOtp[`registered`] && resVerifyOtp[`verified`]) {
-          this.notification.showNotification(
-            'info',
-            resVerifyOtp[`message`] + ' \nNow first Register as User'
-          );
+          this.Toast.fire({
+            icon: 'info',
+            title: resVerifyOtp[`message`] + ' \nNow first Register as User'
+          });
+
           if (this.generateOTPwith === 'mobile') {
             localStorage.setItem('Mobile', otpdata.emailOrMobileNumber);
             localStorage.setItem('Country Code', otpdata.countryCodeId);
@@ -144,15 +177,18 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['registeredUser-otp']);
         } else {
           this.requestCount += 1;
-          this.notification.showNotification(
-            'error',
-            resVerifyOtp[`message`] || resVerifyOtp[`error-message`]
-          );
+
+          this.Toast.fire({
+            icon: 'error',
+            title: resVerifyOtp[`message`] || resVerifyOtp[`error-message`]
+          });
+
           if (this.requestCount >= 3) {
-            this.notification.showNotification(
-              'warning',
-              resVerifyOtp[`error-message`]
-            );
+            this.Toast.fire({
+              icon: 'warning',
+              title: resVerifyOtp[`message`]
+            });
+
             this.generateOTPwith = '';
           }
         }

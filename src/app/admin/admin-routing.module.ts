@@ -7,50 +7,46 @@ import { UsersListComponent } from './Users/users-list/users-list.component';
 import { AddUserComponent } from './Users/add-user/add-user.component';
 import { UsersDetailsComponent } from './Users/users-details/users-details.component';
 import { UserComponent } from './Users/user/user.component';
+import { AuthGuardService } from '../shared/guards/auth-guard.service';
 
 const routes: Routes = [
-    {
+  {
+    path: '',
+    component: LoginComponent
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'users',
+    component: UserComponent,
+    canActivate: [AuthGuardService],
+    children: [
+      {
         path: '',
-        component: LoginComponent
-    },
-    {
-        path: 'dashboard',
-        component: DashboardComponent
-    },
-    {
-        path: 'users',
-        component: UserComponent,
-        children: [
-            {
-                path: '',
-                component: UsersListComponent,
-            },
-            {
-                path: 'add',
-                component: AddUserComponent
-            },
-            {
-                path: 'edit/:id',
-                component: AddUserComponent
-            },
-            {
-                path: 'view/:id',
-                component: UsersDetailsComponent
-            }
-        ]
-    }
-    // {
-    //     path: 'admin/dashboard',
-    //     component: DashboardComponent
-    // },
-    // { path: 'admin/users', component: UsersListComponent },
-    // { path: 'admin/users/add', component: AddUserComponent },
-    // { path: 'admin/users/edit/:id', component: AddUserComponent },
-    // { path: 'admin/users/view/:id', component: UsersDetailsComponent }
+        component: UsersListComponent
+      },
+      {
+        path: 'add',
+        component: AddUserComponent
+      },
+      {
+        path: 'edit/:id',
+        component: AddUserComponent
+      },
+      {
+        path: 'view/:id',
+        component: UsersDetailsComponent
+      }
+    ]
+  }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class AdminRoutingModule { }
+export class AdminRoutingModule {}
+//

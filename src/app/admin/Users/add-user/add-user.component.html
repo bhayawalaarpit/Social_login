@@ -145,6 +145,7 @@
               placeholder="Confirm Password"
               [(ngModel)]="userData['confirmPassword']"
               required
+              (blur)="checkPass(password.model, confirmPassword.model)"
             />
             <span
               class="has-error"
@@ -153,6 +154,9 @@
               "
             >
               Confirm password is Required
+            </span>
+            <span class="has-error" *ngIf="password.model && !matchPassword">
+              Confirm Password is not matched with Password
             </span>
           </div>
         </div>

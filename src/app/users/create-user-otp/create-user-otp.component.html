@@ -138,9 +138,12 @@
                 id="confirmPassword"
                 name="confirmPassword"
                 placeholder="Confirm Password"
-                ngModel
                 required
+                (blur)="
+                  checkPass(password.viewModel, confirmPassword.viewModel)
+                "
               />
+
               <span
                 class="has-error"
                 *ngIf="
@@ -148,6 +151,12 @@
                 "
               >
                 Confirm Password is Required
+              </span>
+              <span
+                class="has-error"
+                *ngIf="password.viewModel && !matchPassword"
+              >
+                Confirm Password is not matched with Password
               </span>
             </div>
           </div>

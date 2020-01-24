@@ -65,3 +65,12 @@ export class LoginService {
     return this.httpclient.post<any[]>(this.baseUrl + '/api/otp/users', data);
   }
 }
+
+// if(localStorage.getItem('token')){
+//   console.log("in if")
+//   this.router.navigate(['/dashboard'])
+//   return true;
+// } else {
+//   this.router.navigate(['/'])
+//   return false;
+// }
